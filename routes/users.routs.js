@@ -1,5 +1,8 @@
 const express = require('express');
 
+//Middlewear
+const { userExists } = require('../middlewares/users.middlewares');
+
 // Controller
 const {
   getAllUsers,
@@ -18,6 +21,10 @@ router.post('/', createUser);
 // router.get('/:id', getUsersId);
 // router.patch('/:id', updateUser );
 // router.delete('/:id', deleteUser );
-router.route('/:id').get(getUsersId).patch(updateUser).delete(deleteUser);
+router
+  .route('/:id')
+  .get(userExists, getUsersId)
+  .patch(userExists, updateUser)
+  .delete(userExists, deleteUser);
 
 module.exports = { usersRouter: router };

@@ -13,15 +13,9 @@ const getAllUsers = async (req, res) => {
 
 const getUsersId = async (req, res) => {
   try {
-    const { id } = req.params;
-    const userId = await User.findOne({ where: { id } });
-
-    if (!userId) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'User not found given that id',
-      });
-    }
+    const { userId } = req;
+    // const { id } = req.params;
+    // const userId = await User.findOne({ where: { id } });
 
     res.status(200).json({
       userId,
@@ -47,18 +41,10 @@ const createUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name, email } = req.body;
-    // await User.update({ name }, {where: {id }});
-    const userUpdate = await User.findOne({ where: { id } });
+    const { userId } = req;
 
-    if (!userUpdate) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'User not found given that id',
-      });
-    }
-    await userUpdate.update({ name, email });
+    const { name, email } = req.body;
+    await userId.update({ name, email });
 
     res.status(200).json({ status: 'Success' });
   } catch (error) {
@@ -68,18 +54,10 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    const { id } = req.params;
-    const userDelete = await User.findOne({ where: { id } });
-
-    if (!userDelete) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'User not found given that id',
-      });
-    }
+    const { userId } = req;
     //delete from...
     //await user.destroy();
-    await userDelete.update({ status: 'deleted' });
+    await userId.update({ status: 'deleted' });
     res.status(200).json({ status: 'Success' });
   } catch (error) {
     console.log(error);
