@@ -13,8 +13,9 @@ const getAllRepairs = async (req, res) => {
 
 const getRepairId = async (req, res) => {
   try {
-    const { id } = req.params;
-    const repairId = await Repair.findOne({ where: { id } });
+    const { repairId } = req;
+    // const { id } = req.params;
+    // const repairId = await Repair.findOne({ where: { id } });
 
     if (!repairId) {
       return res.status(404).json({
@@ -46,19 +47,10 @@ const createRepairs = async (req, res) => {
 
 const updateRepair = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { repairId } = req;
     const { status } = req.body;
 
-    const repairUpdate = await Repair.findOne({ where: { id } });
-
-    if (!repairUpdate) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'Repair not found given that id',
-      });
-    }
-
-    await repairUpdate.update({ status });
+    await repairId.update({ status });
     res.status(200).json({ status: 'Success' });
   } catch (error) {
     console.log(error);
@@ -67,17 +59,9 @@ const updateRepair = async (req, res) => {
 
 const deleteRepair = async (req, res) => {
   try {
-    const { id } = req.params;
-    const repairDelelet = await Repair.findOne({ where: { id } });
+    const { repairId } = req;
 
-    if (!repairDelelet) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'Repair not found given that id',
-      });
-    }
-
-    await repairDelelet.update({ status: 'cancelled' });
+    await repairId.update({ status: 'cancelled' });
     res.status(200).json({ status: 'Success' });
   } catch (error) {
     console.log(error);

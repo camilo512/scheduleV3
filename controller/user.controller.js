@@ -42,10 +42,9 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const { userId } = req;
-
     const { name, email } = req.body;
-    await userId.update({ name, email });
 
+    await userId.update({ name, email });
     res.status(200).json({ status: 'Success' });
   } catch (error) {
     console.log(error);
