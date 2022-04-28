@@ -13,7 +13,7 @@
     "sequelize": "^6.19.0"
   },
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
