@@ -1,8 +1,11 @@
 const { Repair } = require('../models/reparir.model');
+const { User } = require('../models/user.model');
 
 const getAllRepairs = async (req, res) => {
   try {
-    const repairs = await Repair.findAll();
+    const repairs = await Repair.findAll({
+      include: [{ model: User }],
+    });
     res.status(200).json({
       repairs,
     });
@@ -35,9 +38,15 @@ const getRepairId = async (req, res) => {
 const createRepairs = async (req, res) => {
   //   console.log(req.body.name)
   try {
-    const { date, status, userId } = req.body;
+    const { date, computerNumber, comments, status, userId } = req.body;
 
-    const newRepair = await Repair.create({ date, status, userId });
+    const newRepair = await Repair.create({
+      date,
+      computerNumber,
+      comments,
+      status,
+      userId,
+    });
 
     res.status(201).json({ newRepair });
   } catch (error) {

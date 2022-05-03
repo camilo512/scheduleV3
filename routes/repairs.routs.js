@@ -2,6 +2,10 @@ const express = require('express');
 
 //Middleweareas
 const { repairExists } = require('../middlewares/repairs.middlewares');
+const {
+  createRepairValidations,
+  checkValidations,
+} = require('../middlewares/validations.middlewares');
 
 // Controller
 const {
@@ -16,7 +20,7 @@ const router = express.Router();
 
 //http://localhost:4001/api/v1/repair
 router.get('/', getAllRepairs);
-router.post('/', createRepairs);
+router.post('/', createRepairValidations, checkValidations, createRepairs);
 
 router
   .route('/:id')

@@ -2,6 +2,10 @@ const express = require('express');
 
 //Middlewear
 const { userExists } = require('../middlewares/users.middlewares');
+const {
+  createUserValidations,
+  checkValidations,
+} = require('../middlewares/validations.middlewares');
 
 // Controller
 const {
@@ -16,7 +20,7 @@ const router = express.Router();
 
 //http://localhost:4001/api/v1/users
 router.get('/', getAllUsers);
-router.post('/', createUser);
+router.post('/', createUserValidations, checkValidations, createUser);
 //http://localhost:4001/api/v1/users/id
 // router.get('/:id', getUsersId);
 // router.patch('/:id', updateUser );
