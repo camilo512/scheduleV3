@@ -26,7 +26,7 @@ db.sync()
   .catch(err => console.log(err));
 
 // Spin to server
-const PORT = 4001;
+const PORT = process.env.PORT || 4001;
 
 app.listen(PORT, () => {
   console.log(` Express app running on port!!: ${PORT}`);
