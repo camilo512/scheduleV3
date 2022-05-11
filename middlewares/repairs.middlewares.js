@@ -3,7 +3,10 @@ const { Repair } = require('../models/reparir.model');
 const repairExists = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const repairId = await Repair.findOne({ where: { id } });
+    const repairId = await Repair.findOne({
+      where: { id },
+      attributes: { exclude: ['password'] },
+    });
 
     if (!repairId) {
       return res.status(404).json({

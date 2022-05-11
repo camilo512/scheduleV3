@@ -6,7 +6,7 @@ const { catchAsync } = require('../utils/catchAsync');
 
 const getAllRepairs = catchAsync(async (req, res, next) => {
   const repairs = await Repair.findAll({
-    include: [{ model: User }],
+    include: [{ model: User, attributes: { exclude: ['password'] } }],
   });
   res.status(200).json({
     repairs,
@@ -34,13 +34,13 @@ const createRepairs = catchAsync(async (req, res) => {
   //   console.log(req.body.name)
 
   const { date, computerNumber, comments, status, userId } = req.body;
-
+  const { sessionUser } = req;
   const newRepair = await Repair.create({
     date,
     computerNumber,
     comments,
     status,
-    userId,
+    userId: sessionUser.id,
   });
 
   res.status(201).json({ newRepair });
@@ -51,7 +51,7 @@ const updateRepair = catchAsync(async (req, res) => {
   const { status } = req.body;
 
   await repairId.update({ status });
-  res.status(200).json({ status: 'Success' });
+  res.status(200).json({ status: 'completed' });
 });
 
 const deleteRepair = catchAsync(async (req, res) => {
@@ -61,10 +61,67 @@ const deleteRepair = catchAsync(async (req, res) => {
   res.status(200).json({ status: 'Success' });
 });
 
+const getUsersRepairs = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const { userId } = req;
+  // const { id } = req.params;
+  // const repairId = await Repair.findOne({ where: { id } });
+
+  if (!userId) {
+    return res.status(404).json({
+      status: 'error',
+      message: 'Repair not found given that id',
+    });
+  }
+
+  const repairs = await Repair.findAll({
+    where: { userId: id },
+    include: [{ model: User, attributes: { exclude: ['password'] } }],
+  });
+
+  res.status(200).json({ repairs });
+});
+
+const getMyRepairsPending = catchAsync(async (req, res, next) => {
+  const { sessionUser } = req;
+
+  const repairs = await Repair.findAll({
+    where: { userId: sessionUser.id, status: 'pending' },
+    include: [
+      {
+        model: User,
+        attributes: { exclude: ['password'] },
+      },
+    ],
+  });
+
+  res.status(200).json({ repairs });
+});
+
+const getMyRepairsCompleted = catchAsync(async (req, res, next) => {
+  const { sessionUser } = req;
+
+  const repairs = await Repair.findAll({
+    where: { userId: sessionUser.id, status: 'completed' },
+    include: [
+      {
+        model: User,
+        attributes: { exclude: ['password'] },
+      },
+    ],
+  });
+
+  res.status(200).json({ repairs });
+});
+
 module.exports = {
   getAllRepairs,
   createRepairs,
   getRepairId,
   updateRepair,
   deleteRepair,
+  getUsersRepairs,
+  getMyRepairsPending,
+  getMyRepairsCompleted,
 };

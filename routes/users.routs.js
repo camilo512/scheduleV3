@@ -1,7 +1,12 @@
 const express = require('express');
 
 //Middlewear
-const { userExists } = require('../middlewares/users.middlewares');
+const {
+  userExists,
+  protectToken,
+  protectEmployee,
+  protectAccountOwner,
+} = require('../middlewares/users.middlewares');
 const {
   createUserValidations,
   checkValidations,
@@ -14,21 +19,35 @@ const {
   getUsersId,
   updateUser,
   deleteUser,
+  login,
+  checkToken,
 } = require('../controller/user.controller');
 
 const router = express.Router();
 
+router.post(
+  '/',
+  protectToken,
+  protectEmployee,
+  createUserValidations,
+  checkValidations,
+  createUser
+);
+router.post('/login', login);
+
+// Apply protectoken middleware
+router.use(protectToken);
+
 //http://localhost:4001/api/v1/users
-router.get('/', getAllUsers);
-router.post('/', createUserValidations, checkValidations, createUser);
+router.get('/', protectEmployee, getAllUsers);
+
+router.get('/check-token', checkToken);
+
 //http://localhost:4001/api/v1/users/id
-// router.get('/:id', getUsersId);
-// router.patch('/:id', updateUser );
-// router.delete('/:id', deleteUser );
 router
   .route('/:id')
-  .get(userExists, getUsersId)
-  .patch(userExists, updateUser)
-  .delete(userExists, deleteUser);
+  .get(protectEmployee, userExists, getUsersId)
+  .patch(userExists, protectAccountOwner, updateUser)
+  .delete(userExists, protectAccountOwner, deleteUser);
 
 module.exports = { usersRouter: router };
