@@ -27,8 +27,8 @@ const router = express.Router();
 
 router.post(
   '/',
-  protectToken,
-  protectEmployee,
+  // protectToken,
+  // protectEmployee,
   createUserValidations,
   checkValidations,
   createUser

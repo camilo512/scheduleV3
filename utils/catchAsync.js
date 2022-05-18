@@ -1,6 +1,6 @@
-const catchAsync = fn => {
+const catchAsync = controllerFn => {
   return (req, res, next) => {
-    fn(req, res, next).catch(next);
+    controllerFn(req, res, next).catch(next);
   };
 };
 

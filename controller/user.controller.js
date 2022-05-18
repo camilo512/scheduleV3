@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 //Models
 const { User } = require('../models/user.model');
+const { Repair } = require('../models/reparir.model');
+const { Comment } = require('../models/comment.model');
 
 // utils
 const { catchAsync } = require('../utils/catchAsync');
@@ -12,7 +14,17 @@ const bcrypt = require('bcryptjs/dist/bcrypt');
 dotenv.config({ path: './config.env' });
 
 const getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.findAll({ attributes: { exclude: ['password'] } });
+  const users = await User.findAll({
+    attributes: { exclude: ['password'] },
+    include: [
+      { model: Repair },
+      {
+        model: Comment,
+        include: [{ model: Repair, include: [{ model: User }] }],
+      },
+    ],
+  });
+
   res.status(200).json({
     users,
   });
@@ -78,6 +90,7 @@ const login = catchAsync(async (req, res, next) => {
     return next(new AppError('Invalid credentials', 400));
   }
   // generate JWT
+
   const token = await jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });

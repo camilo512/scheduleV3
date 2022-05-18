@@ -1,11 +1,11 @@
 const { app } = require('./app');
 
 // Models
-const { Repair } = require('./models/reparir.model');
-const { User } = require('./models/user.model');
+const { initModels } = require('./models/initModels');
 
 // Utils // conected a bd
 const { db } = require('./utils/database');
+const req = require('express/lib/request');
 
 // Authenticate database credentials
 db.authenticate()
@@ -13,12 +13,7 @@ db.authenticate()
   .catch(err => console.log(err));
 
 // establish model relations
-
-// 1 User <---> M Post
-// User.hasMany(Post, { foreignKey: 'userId' });
-
-User.hasMany(Repair);
-Repair.belongsTo(User);
+initModels();
 
 //{ force: true }
 db.sync()
