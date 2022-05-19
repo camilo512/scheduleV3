@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const compression = require('compression');
+const morgan = require('morgan');
 
 //Controllers
 
@@ -10,6 +13,7 @@ const { globalErrorHandler } = require('./controller/errors.controllers');
 const { usersRouter } = require('./routes/users.routs');
 const { repairsRouter } = require('./routes/repairs.routs');
 const { commentsRouter } = require('./routes/comments.routes');
+const req = require('express/lib/request');
 // init express app
 const app = express();
 
@@ -19,6 +23,15 @@ app.use(cors());
 // Enable incoming JSON data
 app.use(express.json());
 
+// Add security helmet
+app.use(helmet());
+
+// Compress responses
+app.use(compression());
+
+// Log incomig requests morgan
+if (process.env.NODE_ENV == 'development') app.use(morgan('dev'));
+else app.use(morgan('combined'));
 //Limit IP requests
 
 const limiter = rateLimit({
